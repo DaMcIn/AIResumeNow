@@ -41,6 +41,7 @@ nav {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
+.nav-right { display: flex; align-items: center; gap: 1rem; position: relative; }
 
 .nav-logo {
   font-family: 'DM Serif Display', serif;
@@ -51,17 +52,41 @@ nav {
 }
 .nav-logo em { color: var(--gold); }
 
-.nav-links { display: flex; gap: 2rem; align-items: center; }
-.nav-links a {
-  font-size: 0.82rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-  text-decoration: none;
-  transition: color 0.2s;
+/* ── DROPDOWN NAV ── */
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+
+.nav-menu-btn {
+  background: none; border: 1px solid var(--border-md);
+  border-radius: 4px; padding: 0.45rem 0.9rem;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+  font-weight: 500; color: var(--ink-2); transition: all 0.2s;
 }
-.nav-links a:hover { color: var(--ink); }
+.nav-menu-btn:hover { border-color: var(--gold); color: var(--ink); }
+
+.nav-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 2.5rem;
+  background: var(--surface); border: 1px solid var(--border-md);
+  border-radius: 8px; box-shadow: 0 8px 32px rgba(23,21,15,0.1);
+  padding: 0.5rem; min-width: 200px; z-index: 200;
+  display: none; flex-direction: column; gap: 2px;
+  animation: fadeDown 0.2s ease;
+}
+.nav-dropdown.open { display: flex; }
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nav-dropdown a {
+  display: block; padding: 0.6rem 0.9rem; border-radius: 5px;
+  font-size: 0.85rem; font-weight: 500; color: var(--ink-2);
+  text-decoration: none; transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+.nav-dropdown a:hover { background: var(--warm); color: var(--ink); }
+.nav-dropdown .dd-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
 .nav-cta {
   background: var(--ink) !important;
@@ -622,12 +647,17 @@ footer {
 <!-- NAV -->
 <nav>
   <a class="nav-logo" href="#">AIResume<em>Now</em></a>
-  <div class="nav-links">
-    <a href="#how-it-works">How It Works</a>
-    <a href="#options">Options</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="about.html">About</a>
+  <div class="nav-right">
     <a href="resume-intake-form.html" class="nav-cta">Start Free →</a>
+    <button class="nav-menu-btn" onclick="toggleNav()" id="nav-menu-btn">☰ Menu</button>
+    <div class="nav-dropdown" id="nav-dropdown">
+      <a href="index.html#how-it-works">How It Works</a>
+      <a href="index.html#options">Options</a>
+      <a href="about.html">About</a>
+      <div class="dd-divider"></div>
+      <a href="pricing.html">Pricing</a>
+      <a href="resume-intake-form.html">Build My Resume</a>
+    </div>
   </div>
 </nav>
 
@@ -881,6 +911,83 @@ style.textContent = `
   @keyframes scaleIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
 `;
 document.head.appendChild(style);
+</script>
+<!-- ── FLOATING AI ASSISTANT ── -->
+<div id="ai-bubble" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;">
+  <div id="ai-chat-box" style="display:none;background:#fff;border:1px solid #E8E5DF;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);width:320px;overflow:hidden;">
+    <div style="background:#17150F;padding:0.9rem 1rem;display:flex;justify-content:space-between;align-items:center;">
+      <div style="color:#FAF8F3;font-family:'DM Serif Display',serif;font-size:1rem;">✦ AI Career Assistant</div>
+      <button onclick="toggleAI()" style="background:none;border:none;color:#9A978F;cursor:pointer;font-size:1rem;">✕</button>
+    </div>
+    <div id="ai-msgs" style="height:240px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.6rem;font-family:'DM Sans',sans-serif;">
+      <div style="background:#F6EDDA;color:#17150F;padding:0.6rem 0.9rem;border-radius:8px;border-bottom-left-radius:2px;font-size:0.83rem;line-height:1.55;border:1px solid #E8D5A8;">Hi! I'm your AI career assistant. Ask me anything about resumes, job searching, or career advice!</div>
+    </div>
+    <div style="padding:0.75rem;border-top:1px solid #E8E5DF;display:flex;gap:8px;">
+      <input type="text" id="ai-input" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendAI();" style="flex:1;padding:0.5rem 0.75rem;border:1px solid #E8E5DF;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:0.82rem;outline:none;">
+      <button onclick="sendAI()" style="background:#C8913A;color:#17150F;border:none;border-radius:4px;padding:0 0.9rem;font-weight:600;cursor:pointer;font-size:0.85rem;transition:background 0.2s;" onmouseover="this.style.background='#8A6218';this.style.color='#fff'" onmouseout="this.style.background='#C8913A';this.style.color='#17150F'">→</button>
+    </div>
+  </div>
+  <button onclick="toggleAI()" id="ai-toggle-btn" style="width:54px;height:54px;border-radius:50%;background:#C8913A;border:none;color:#17150F;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 16px rgba(200,145,58,0.45);display:flex;align-items:center;justify-content:center;transition:transform 0.2s;margin-left:auto;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">✦</button>
+</div>
+
+<script>
+/* ── NAV DROPDOWN ── */
+function toggleNav() {
+  const dd = document.getElementById('nav-dropdown');
+  dd.classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#nav-menu-btn') && !e.target.closest('#nav-dropdown')) {
+    document.getElementById('nav-dropdown')?.classList.remove('open');
+  }
+});
+
+/* ── AI ASSISTANT ── */
+let aiOpen = false;
+let aiHistory = [];
+function toggleAI() {
+  aiOpen = !aiOpen;
+  document.getElementById('ai-chat-box').style.display = aiOpen ? 'block' : 'none';
+  document.getElementById('ai-toggle-btn').style.display = aiOpen ? 'none' : 'flex';
+}
+async function sendAI() {
+  const input = document.getElementById('ai-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  const box = document.getElementById('ai-msgs');
+  const userB = document.createElement('div');
+  userB.style.cssText = 'background:#17150F;color:#FAF8F3;padding:0.6rem 0.9rem;border-radius:8px;border-bottom-right-radius:2px;font-size:0.83rem;line-height:1.55;align-self:flex-end;max-width:85%;font-family:DM Sans,sans-serif;';
+  userB.textContent = msg;
+  box.appendChild(userB);
+  const thinkB = document.createElement('div');
+  thinkB.style.cssText = 'background:#F6EDDA;color:#9A978F;padding:0.6rem 0.9rem;border-radius:8px;border-bottom-left-radius:2px;font-size:0.78rem;font-style:italic;font-family:DM Sans,sans-serif;border:1px solid #E8D5A8;';
+  thinkB.textContent = 'Thinking…';
+  box.appendChild(thinkB);
+  box.scrollTop = box.scrollHeight;
+  aiHistory.push({ role: 'user', content: msg });
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 500,
+        system: 'You are a friendly, expert career and resume coach for AIResumeNow. Give concise, practical advice in under 80 words unless asked for more.',
+        messages: aiHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.map(c => c.text||'').join('') || 'Sorry, try again.';
+    aiHistory.push({ role: 'assistant', content: reply });
+    thinkB.remove();
+    const aiB = document.createElement('div');
+    aiB.style.cssText = 'background:#F6EDDA;color:#17150F;padding:0.6rem 0.9rem;border-radius:8px;border-bottom-left-radius:2px;font-size:0.83rem;line-height:1.55;max-width:85%;font-family:DM Sans,sans-serif;border:1px solid #E8D5A8;';
+    aiB.textContent = reply;
+    box.appendChild(aiB);
+    box.scrollTop = box.scrollHeight;
+  } catch { thinkB.textContent = 'Error — please try again.'; }
+}
 </script>
 </body>
 </html>

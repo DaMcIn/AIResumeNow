@@ -63,6 +63,7 @@ nav {
   transition: background 0.2s !important;
 }
 .nav-cta:hover { background: var(--gold-dk) !important; color: var(--cream) !important; }
+.nav-right { display: flex; align-items: center; gap: 1rem; position: relative; }
 
 /* ── HERO ── */
 .hero {
@@ -340,12 +341,23 @@ footer {
 <!-- NAV -->
 <nav>
   <a class="nav-logo" href="index.html">AIResume<em>Now</em></a>
-  <div class="nav-links">
-    <a href="index.html#how-it-works">How It Works</a>
-    <a href="pricing.html" style="color:var(--ink);">Pricing</a>
+  <div class="nav-right">
     <a href="resume-intake-form.html" class="nav-cta">Start Free →</a>
+    <button class="nav-menu-btn" onclick="document.getElementById('nav-dd').classList.toggle('open')" style="background:none;border:1px solid rgba(23,21,15,0.22);border-radius:4px;padding:0.45rem 0.9rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;color:#4A4740;">☰ Menu</button>
+    <div id="nav-dd" style="position:absolute;top:calc(100% + 8px);right:2.5rem;background:#fff;border:1px solid rgba(23,21,15,0.22);border-radius:8px;box-shadow:0 8px 32px rgba(23,21,15,0.1);padding:0.5rem;min-width:200px;z-index:200;display:none;flex-direction:column;gap:2px;">
+      <a href="index.html#how-it-works" style="display:block;padding:0.6rem 0.9rem;border-radius:5px;font-size:0.85rem;font-weight:500;color:#4A4740;text-decoration:none;">How It Works</a>
+      <a href="index.html#options" style="display:block;padding:0.6rem 0.9rem;border-radius:5px;font-size:0.85rem;font-weight:500;color:#4A4740;text-decoration:none;">Options</a>
+      <a href="about.html" style="display:block;padding:0.6rem 0.9rem;border-radius:5px;font-size:0.85rem;font-weight:500;color:#4A4740;text-decoration:none;">About</a>
+      <div style="height:1px;background:rgba(23,21,15,0.12);margin:4px 0;"></div>
+      <a href="pricing.html" style="display:block;padding:0.6rem 0.9rem;border-radius:5px;font-size:0.85rem;font-weight:500;color:#4A4740;text-decoration:none;">Pricing</a>
+      <a href="resume-intake-form.html" style="display:block;padding:0.6rem 0.9rem;border-radius:5px;font-size:0.85rem;font-weight:500;color:#4A4740;text-decoration:none;">Build My Resume</a>
+    </div>
   </div>
 </nav>
+<script>
+document.addEventListener('click', e => { if(!e.target.closest('#nav-dd')&&!e.target.closest('.nav-menu-btn')){const d=document.getElementById('nav-dd');if(d)d.style.display='none';} });
+document.querySelector('.nav-menu-btn')?.addEventListener('click', ()=>{ const d=document.getElementById('nav-dd'); d.style.display=d.style.display==='flex'?'none':'flex'; });
+</script>
 
 <!-- HERO -->
 <section class="hero">
